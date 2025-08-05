@@ -121,12 +121,13 @@
             </div>
             <!-- Dashboard End -->
 			<!-- Display do espectrograma -->
-<div class="container-fluid pt-4 px-4" id="waterfall-container" style="display: none;">
-  <div class="bg-secondary rounded h-100 p-4">
-    <h6 class="mb-4">Espectrograma (Waterfall)</h6>
-    <canvas id="waterfallCanvas" width="800" height="400" style="width: 100%; background: black;"></canvas>
-  </div>
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Espectrograma (Waterfall)</h6>
+        <div id="heatmap" style="width: 100%; height: 400px;"></div>
+    </div>
 </div>
+
             <!-- Form Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -277,79 +278,56 @@
     <!-- Notify Libraries -->
     <script src="notify.min.js"></script>
    <!-- Área para digitar o sinal -->
-<textarea class="form-control" id="txtRAW"
-  onchange="fetch('/APPLY?P1=RAWDATA&P2=' + this.value)"
-  style="height: 300px;"></textarea>
 
-<!-- Botão para enviar o sinal -->
-<button id="sendSignalBtn" class="btn btn-primary mt-3">Send Signal</button>
-
-
-
-<!-- Plotly.js CDN -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-<!-- Área para o usuário digitar os dados -->
-<textarea class="form-control" id="txtRAW" style="height: 300px;"></textarea>
-<button class="btn btn-primary mt-2" onclick="sendSignal()">Send Signal</button>
-
-
-
 <script>
-// Tamanho da cascata
-const canvas = document.getElementById("waterfallCanvas");
-const ctx = canvas.getContext("2d");
-const width = canvas.width;
-const height = canvas.height;
+    let zData = [];
+    let yData = [];
 
-// Função que converte caractere em intensidade (simples)
-function charToColor(char) {
-  const code = char.charCodeAt(0);
-  const intensity = code % 256;
-  return `rgb(${intensity}, ${intensity}, ${255 - intensity})`;
-}
-
-// Desenha uma linha no canvas (parte da cascata)
-function drawLine(lineData) {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  ctx.clearRect(0, 0, width, height);
-
-  // Mover tudo uma linha pra cima
-  ctx.putImageData(imageData, 0, -1);
-
-  // Desenhar nova linha
-  const lineHeight = 1;
-  const spacing = Math.floor(width / lineData.length);
-
-  for (let i = 0; i < lineData.length; i++) {
-    ctx.fillStyle = charToColor(lineData[i]);
-    ctx.fillRect(i * spacing, height - lineHeight, spacing, lineHeight);
-  }
-}
-
-// Evento ao clicar no botão
-function sendSignal() {
-  const text = document.getElementById("txtRAW").value.trim();
-  if (!text) return;
-
-  document.getElementById("waterfall-container").style.display = "block";
-
-  const characters = text.split("");
-  let index = 0;
-
-  const interval = setInterval(() => {
-    if (index >= characters.length) {
-      clearInterval(interval);
-      return;
+    function gerarLinhaEspectrograma(inputString) {
+        const linha = [];
+        for (let i = 0; i < inputString.length; i++) {
+            const bit = inputString[i];
+            if (bit === '1') {
+                linha.push(Math.random() * 10 + 10);
+            } else if (bit === '0') {
+                linha.push(Math.random() * 5);
+            } else {
+                linha.push(0); // qualquer outro caractere
+            }
+        }
+        return linha;
     }
 
-    // Montar uma "linha" de 50 caracteres por vez (ou ajuste como quiser)
-    const slice = characters.slice(index, index + 50);
-    drawLine(slice);
-    index += 50;
-  }, 100); // tempo entre linhas (em ms)
-}
+    function enviarERenderizar() {
+        const txt = document.getElementById('txtRAW').value.trim();
+
+        // Envia para o back-end como antes
+        fetch('/APPLY?P1=RAWDATA&P2=' + encodeURIComponent(txt));
+
+        // Gera nova linha para o espectrograma
+        const novaLinha = gerarLinhaEspectrograma(txt);
+        zData.push(novaLinha);
+        yData.push('T' + zData.length);
+
+        const xData = Array.from({ length: txt.length }, (_, i) => `B${i}`);
+
+        const data = [{
+            z: zData,
+            x: xData,
+            y: yData,
+            type: 'heatmap',
+            colorscale: 'Viridis'
+        }];
+
+        Plotly.newPlot('heatmap', data, {
+            title: 'Espectrograma (Waterfall)',
+            xaxis: { title: 'Bits' },
+            yaxis: { title: 'Transmissões' }
+        });
+    }
 </script>
+
 	
 	<script>
 	function checkBinary() {
