@@ -144,7 +144,7 @@ O tamanho pode variar de 8GB a 32GB em formato FAT32 (acima disso pode bugar ou 
 SSID: ECRF<br>
 Password: 123456789
 
-(outros firmwares usam a senha <h1>123456789ECRFv2</h1>)
+(outros firmwares usam a senha <h3>123456789ECRFv2</h3>)
 
  - Open a browser and navigate to the web panel. (Default IP: 192.168.4.1)
  
