@@ -56,8 +56,9 @@ Ao conectar-se desabilite a navegação segura e troca de wifi automática
 - Kaiju rolling code example: <a href="https://www.youtube.com/watch?v=AoA9FV-VG6w">https://www.youtube.com/watch?v=AoA9FV-VG6w</a>
 - Rollback example: <a href="https://www.youtube.com/watch?v=LSzn4hr09bA">https://www.youtube.com/watch?v=LSzn4hr09bA</a>
 
-# Connect Kaiju to AP with wifi :
-<img width="913" height="396" alt="image" src="https://github.com/user-attachments/assets/ef0f4fb3-a671-43cc-bb01-0ad223ca9e6a" />
+# Connect Kaiju to AP with wifi (i'm 69th :D):
+<img width="930" height="567" alt="image" src="https://github.com/user-attachments/assets/b7f46620-b423-4824-8db6-10362b10717d" />
+
 
 
 <br>
