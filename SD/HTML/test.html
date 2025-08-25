@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Envio RAW</title></head>
+<body style="background:#111;color:#0f0;font-family:monospace;padding:20px">
+  <h2>🔫 EvilCrowRF - Enviar RAW</h2>
+  <textarea id="raw" rows="6" cols="70">-7955 125 -19413 130 -17661 63 -26266 32 -7218 131 -1265 0</textarea><br><br>
+  <button onclick="send()">Enviar</button>
+  <div id="status" style="margin-top:20px;"></div>
+
+  <script>
+    const ip = "192.168.4.1";
+    async function send() {
+      const signal = document.getElementById("raw").value;
+      const url = `http://${ip}/SENDRAW?P1=${encodeURIComponent(signal)}`;
+      document.getElementById("status").textContent = "⏳ Enviando...";
+      try {
+        await fetch(url);
+        document.getElementById("status").textContent = "✅ Sinal enviado com sucesso!";
+      } catch (e) {
+        document.getElementById("status").textContent = "❌ Erro ao enviar: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
